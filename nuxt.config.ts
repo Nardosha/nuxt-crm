@@ -4,6 +4,11 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true 
   },
+  app: {
+    head: {
+      titleTemplate: import.meta.env.VITE_APP_TITLE
+    }
+  },
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxt/image',
