@@ -1,71 +1,75 @@
-import globals from 'globals';
-import pluginJs from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import pluginVue from 'eslint-plugin-vue';
-import stylistic from '@stylistic/eslint-plugin';
+import {
+  configs as tsEslintConfig,
+  plugin as tsEslintPlugin,
+  parser as tsEslintParser,
+} from 'typescript-eslint';
+import eslintPluginVue from 'eslint-plugin-vue';
+import nuxtEslintPlugin from '@nuxt/eslint-plugin';
+import vueEslintParser from 'vue-eslint-parser';
 
+import stylisticEslintPlugin from '@stylistic/eslint-plugin';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
+  // prettierRecommended,
+  ...tsEslintConfig.recommended,
+  ...eslintPluginVue.configs['flat/essential'],
   {
-    files: ['**/*.{js,mjs,cjs,ts,vue}'],
-    plugins: {
-      '@stylistic': stylistic,
-    },
     ignores: [
       '**/dist/**',
-      '**/node_modules/**',
       '**/*.min.js',
       '**/build/**',
       'public/**',
       '.nuxt/**',
+      '.output/**',
+      '.gitlab/**',
     ],
+  },
+  {
+    plugins: {
+      nuxt: nuxtEslintPlugin,
+      vue: eslintPluginVue,
+      'typescript-eslint': tsEslintPlugin,
+      '@stylistic': stylisticEslintPlugin,
+    },
+    files: ['**/*.{js,ts,jsx,tsx,vue}'],
+    languageOptions: {
+      parser: vueEslintParser,
+      parserOptions: {
+        parser: tsEslintParser,
+        extraFileExtensions: ['.vue'],
+        sourceType: 'module',
+        ecmaVersion: 'latest',
+        project: './tsconfig.json',
+      },
+    },
     rules: {
-      '@stylistic/quotes': ['error', 'single'],
-      '@stylistic/indent':  ['error', 2],
+      'max-len': ['error', {
+        'code': 120,
+        'ignoreComments': true,
+        'ignoreUrls': true,
+      }],
       'no-console': 'warn',
       '@stylistic/semi': 'off',
       '@stylistic/block-spacing': 'error',
       '@stylistic/curly-newline': 'error',
-      '@stylistic/object-curly-newline': [
-        'error',
-        {
-          ObjectExpression: {
-            consistent: true,
-          },
-          ObjectPattern: {
-            consistent: true,
-          },
-          ImportDeclaration: 'never',
-          ExportDeclaration: 'always',
-        },
-      ],
+      '@stylistic/object-curly-newline': 'off',
       '@stylistic/multiline-comment-style': 'off',
       '@stylistic/array-element-newline': 'off',
       '@stylistic/space-before-function-paren': 'off',
-      '@eslint-community/eslint-comments/require-description': 'off', '@eslint-community/eslint-comments/disable-enable-pair': 'off',
-    }
-  },
-  {
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.node
-      }
-    }
-  },
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
-  ...pluginVue.configs['flat/essential'],
-  {
-    files: ['**/*.vue'],
-    languageOptions: {
-      parserOptions: {
-        parser: tseslint.parser
-      }
+      '@eslint-community/eslint-comments/require-description': 'off',
+      '@eslint-community/eslint-comments/disable-enable-pair': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
     },
-    rules: {
-      'vue/multi-word-component-names': 'off'
-    }
+    settings: {
+      'import/parsers': {
+        '@typescript-eslint/parser': ['.ts'],
+      },
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+        },
+      },
+    },
   },
 ];
