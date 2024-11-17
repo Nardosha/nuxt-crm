@@ -4,11 +4,11 @@
 			<NuxtImg src="/logo.svg" alt="" width="140px" class="mx-auto" />
 		</NuxtLink>
 
-      <button
+      <ui-button
           class="absolute top-2 right-3 transition-colors hover:text-primary"
       >
         <Icon name="line-md:logout" size="20" />
-      </button>
+      </ui-button>
 
     <LayoutMenu/>
 	</aside>
